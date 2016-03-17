@@ -91,11 +91,6 @@ public class KeyStore extends Keybase.ExternalKeyStore.Stub {
     }
 
     @Override
-    public String GetTerminalPrompt() {
-        return "Store secret in Android's KeyStore?";
-    }
-
-    @Override
     public synchronized void SetupKeyStore(final String username) throws Exception {
         if (!ks.containsAlias(KEY_ALIAS)) {
             KeyStoreHelper.generateRSAKeyPair(context, KEY_ALIAS);

@@ -42,20 +42,20 @@ type secretStoreAccountName struct {
 	externalKeyStore ExternalKeyStore
 }
 
-var _ SecretStore = secretStoreAccountName{}
+var _ SecretStoreAll = secretStoreAccountName{}
 
 func (s secretStoreAccountName) StoreSecret(username NormalizedUsername, secret []byte) (err error) {
 	externalKeyStore.SetupKeyStore(string(username))
-	return s.externalKeyStore.StoreSecret(username, secret)
+	return s.externalKeyStore.StoreSecret(string(username), secret)
 }
 
 func (s secretStoreAccountName) RetrieveSecret(username NormalizedUsername) ([]byte, error) {
 	externalKeyStore.SetupKeyStore(string(username))
-	return s.externalKeyStore.RetrieveSecret(username)
+	return s.externalKeyStore.RetrieveSecret(string(username))
 }
 
 func (s secretStoreAccountName) ClearSecret(username NormalizedUsername) (err error) {
-	return s.externalKeyStore.ClearSecret(username)
+	return s.externalKeyStore.ClearSecret(string(username))
 }
 
 func NewSecretStoreAll(g *GlobalContext) SecretStoreAll {
@@ -82,12 +82,4 @@ func (s secretStoreAccountName) GetUsersWithStoredSecrets() ([]string, error) {
 	ch := codecHandle()
 	err = MsgpackDecodeAll(usersMsgPack, ch, &users)
 	return users, err
-}
-
-func GetTerminalPrompt() string {
-	externalKeyStore := getGlobalExternalKeyStore()
-	if externalKeyStore == nil {
-		return ""
-	}
-	return externalKeyStore.GetTerminalPrompt()
 }
